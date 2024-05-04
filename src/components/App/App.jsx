@@ -17,40 +17,37 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const fetchImages = useCallback(async () => {
+    const apiKey = '42617556-81109194e933f8c86a5f2575e';
+    const url = `https://pixabay.com/api/?key=${apiKey}&q=${query}&image_type=photo&orientation=horizontal&safesearch=true&page=${page}&per_page=12`;
 
-    const fetchImages = useCallback ( async () => {
-      const apiKey = '42617556-81109194e933f8c86a5f2575e';
-      const url = `https://pixabay.com/api/?key=${apiKey}&q=${query}&image_type=photo&orientation=horizontal&safesearch=true&page=${page}&per_page=12`;
+    setIsLoading(true);
 
-      setIsLoading(true);
+    try {
+      const response = await axios.get(url);
+      const data = response.data;
 
-      try {
-        const response = await axios.get(url);
-        const data = response.data;
+      setImage(prevImages => [...prevImages, ...data.hits]);
+      setPage(prevPage => prevPage + 1);
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Error fetching images:', error);
+      setIsLoading(false);
+      setError('Failed to fetch images. Please try again later.');
+    }
+  }, [query, page]);
 
-        setImage(prevImages => [...prevImages, ...data.hits]);
-        setPage(prevPage => prevPage + 1);
-        setIsLoading(false);
+  useEffect(() => {
+    if (query) {
+      fetchImages();
+    }
+  }, [query, fetchImages]);
 
-      } catch (error) {
-        console.error('Error fetching images:', error);
-        setIsLoading(false);
-        setError('Failed to fetch images. Please try again later.');
-      }
-    }, [query, page]);
-
-    useEffect(() => {
-      if (query) {
-        fetchImages();
-      }
-    }, [query, fetchImages]);
-  
-    const handleSubmit = query => {
-      setQuery(query);
-      setImage([]);
-      setPage(1);
-    };
-
+  const handleSubmit = query => {
+    setQuery(query);
+    setImage([]);
+    setPage(1);
+  };
 
   const handleLoadMore = () => {
     fetchImages();
