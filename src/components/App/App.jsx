@@ -60,7 +60,7 @@ const App = () => {
     if (query) {
       fetchImages();
     }
-  }, [query]);
+  }, [query, fetchImages]);
 
   return (
     <div className={styles.app}>
