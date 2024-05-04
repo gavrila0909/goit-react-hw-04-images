@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Searchbar from '../Searchbar/Searchbar';
 import Button from '../Button/Button';
 import ImageGallery from '../ImageGallery/ImageGallery';
@@ -22,7 +22,7 @@ const App = () => {
     setPage(1);
   };
 
-  const fetchImages = async () => {
+  const fetchImages = useCallback (async () => {
     const apiKey = '42617556-81109194e933f8c86a5f2575e';
     const url = `https://pixabay.com/api/?key=${apiKey}&q=${query}&image_type=photo&orientation=horizontal&safesearch=true&page=${page}&per_page=12`;
 
@@ -40,7 +40,7 @@ const App = () => {
       setIsLoading(false);
       setError('Failed to fetch images. Please try again later.');
     }
-  };
+  }, [query, page]);
 
   const handleLoadMore = () => {
     fetchImages();
