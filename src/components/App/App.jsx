@@ -21,7 +21,7 @@ const App = () => {
     if (query) {
       fetchImages();
     }
-  }, [query]);
+  }, [query, fetchImages]);
 
   const handleSubmit = query => {
     setQuery(query);
