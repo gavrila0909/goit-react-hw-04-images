@@ -1,31 +1,28 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styles from './Searchbar.module.css';
 
-class Searchbar extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      inputValue: '',
-    };
-  }
+const Searchbar = ({onSubmit}) => {
+
+  const [inputValue, setInputValue] = useState ('')
+
 
   //actualizam noua valoare input
-  handleInputChange = event => {
+  const handleInputChange = event => {
     // SAU const newInputValue = event.target.value => inputValue: newInputValue
-    this.setState({ inputValue: event.target.value });
+    setInputValue( event.target.value );
   };
 
-  handleSubmit = event => {
+  const handleSubmit = event => {
     event.preventDefault();
-    this.props.onSubmit(this.state.inputValue);
-    this.setState({ inputValue: '' }); //se goleste inputul
+    onSubmit(inputValue);
+    setInputValue(''); //se goleste inputul
   };
 
-  render() {
+  
     return (
       <header className={styles.searchbar}>
-        <form className={styles.searchForm} onSubmit={this.handleSubmit}>
+        <form className={styles.searchForm} onSubmit={handleSubmit}>
           <button type="submit" className={styles.button}>
             <span className={styles.buttonLabel}>Search</span>
           </button>
@@ -37,14 +34,14 @@ class Searchbar extends Component {
             autoFocus
             placeholder="Search images and photos"
             name="inputValue"
-            value={this.state.inputValue}
-            onChange={this.handleInputChange}
+            value={inputValue}
+            onChange={handleInputChange}
           />
         </form>
       </header>
     );
   }
-}
+
 
 Searchbar.propTypes = {
   onSubmit: PropTypes.func.isRequired,
