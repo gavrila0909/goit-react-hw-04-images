@@ -8,6 +8,8 @@ import axios from 'axios';
 import styles from './App.module.css';
 
 const App = () => {
+  const [URL] = useState('https://pixabay.com/api');
+  const [API_KEY] = useState('42617556-81109194e933f8c86a5f2575e');
   const [images, setImages] = useState([]);
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
@@ -16,35 +18,43 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleSubmit = query => {
-    setQuery(query);
-    setImages([]);
-    setPage(1);
-  };
 
-  const fetchImages = useCallback (async () => {
-    const apiKey = '42617556-81109194e933f8c86a5f2575e';
-    const url = `https://pixabay.com/api/?key=${apiKey}&q=${query}&image_type=photo&orientation=horizontal&safesearch=true&page=${page}&per_page=12`;
+  const fetchImages = useCallback(async () => {
+    const fetchUrl = `${URL}/?key=${API_KEY}&q=${query}&image_type=photo&orientation=horizontal&safesearch=true&page=${page}&per_page=12`;
 
     setIsLoading(true);
 
     try {
-      const response = await axios.get(url);
+      const response = await axios.get(fetchUrl);
       const data = response.data;
 
       setImages(prevImages => [...prevImages, ...data.hits]);
-      setPage(prevPage => prevPage + 1);
       setIsLoading(false);
+
     } catch (error) {
       console.error('Error fetching images:', error);
       setIsLoading(false);
       setError('Failed to fetch images. Please try again later.');
     }
-  }, [query, page]);
+  }, [URL, API_KEY, query, page]);
 
-  const handleLoadMore = () => {
-    fetchImages();
-  };
+  useEffect(() => {
+    if (query) {
+      fetchImages();
+    }
+  }, [query, fetchImages]);
+
+  const handleSubmit = useCallback(query => {
+    setImages([]);
+    setPage(1);
+    setQuery(query);
+  }, []);
+
+
+  const handleLoadMore = useCallback(() => {
+    setPage(prevPage => prevPage + 1);
+  }, []);
+
 
   const handleImageClick = image => {
     setShowModal(true);
@@ -55,12 +65,6 @@ const App = () => {
     setShowModal(false);
     setSelectedImage(null);
   };
-
-  useEffect(() => {
-    if (query) {
-      fetchImages();
-    }
-  }, [query, fetchImages]);
 
   return (
     <div className={styles.app}>
