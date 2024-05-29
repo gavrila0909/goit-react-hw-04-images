@@ -18,7 +18,6 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-
   const fetchImages = useCallback(async () => {
     const fetchUrl = `${URL}/?key=${API_KEY}&q=${query}&image_type=photo&orientation=horizontal&safesearch=true&page=${page}&per_page=12`;
 
@@ -30,7 +29,6 @@ const App = () => {
 
       setImages(prevImages => [...prevImages, ...data.hits]);
       setIsLoading(false);
-
     } catch (error) {
       console.error('Error fetching images:', error);
       setIsLoading(false);
@@ -50,11 +48,9 @@ const App = () => {
     setQuery(query);
   }, []);
 
-
   const handleLoadMore = useCallback(() => {
     setPage(prevPage => prevPage + 1);
   }, []);
-
 
   const handleImageClick = image => {
     setShowModal(true);
