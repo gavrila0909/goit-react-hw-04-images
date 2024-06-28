@@ -5,6 +5,7 @@ import ImageGallery from '../ImageGallery/ImageGallery';
 import Modal from '../Modal/Modal';
 import Loader from '../Loader/Loader';
 import axios from 'axios';
+import Notiflix from 'notiflix';
 import styles from './App.module.css';
 
 const App = () => {
@@ -26,7 +27,9 @@ const App = () => {
     try {
       const response = await axios.get(fetchUrl);
       const data = response.data;
-
+      if (data.hits.length === 0) {
+        Notiflix.Notify.failure('No images found for the current search.');
+      }
       setImages(prevImages => [...prevImages, ...data.hits]);
       setIsLoading(false);
     } catch (error) {
